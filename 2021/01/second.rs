@@ -3,21 +3,7 @@ use std::str::FromStr;
 
 fn main() {
     let stdin = io::stdin();
-    let lines = stdin.lock().lines();
-    let numbers = lines.map(|x| i32::from_str(&x.unwrap()).unwrap()).collect::<Vec<i32>>();
-    let mut sliding_window = vec![];
-
-    for i in 0..numbers.len() - 2 {
-        let val = numbers[i] + numbers[i + 1] + numbers[i + 2];
-        sliding_window.push(val);
-    }
-
-    let mut num_increases = 0;
-    for i in 1..sliding_window.len() {
-        if sliding_window[i - 1] < sliding_window[i] {
-            num_increases += 1;
-        }
-    }    
-
-    println!("{:?}", num_increases);
+    let nums: Vec<i32> = stdin.lock().lines().map(|x| i32::from_str(&x.unwrap()).unwrap()).collect();
+    let sw_nums: Vec<i32> = (0..nums.len() - 2).map(|i| nums[i] + nums[i + 1] + nums[i + 2]).collect();
+    println!("{}", (0..sw_nums.len() - 1).map(|i| (sw_nums[i] < sw_nums[i + 1]) as i32).sum::<i32>());
 }
