@@ -15,10 +15,12 @@ fn main() {
                 .fold( // ny fold der laver en liste af counts af alle med samme værdi
                     // fra input listen, alle med samme værdi grupperes under samme index
                     vec![0; 9], // start værdi
-                    |mut acc, x| { // acc er sum-listen, x er en værdi fra input
-                        acc[x] += 1; // increment index med værdien x, med 1
-                        acc // send acc videre
-                    }
+                    |acc, x|  // acc er sum-listen, x er en værdi fra input
+                        (0..9).map(|i|
+                            if x == i { acc[i] + 1 }
+                            else { acc[i] }
+                        )
+                        .collect()
                 ), // slut for opbyggelsen af vores startværdi i den ydre fold
             |acc, _| 
             // i den ydre fold har vi kun brug for en acc, så vores (0..256) værdi giver vi ikke navn
