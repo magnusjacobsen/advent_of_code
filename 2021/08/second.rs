@@ -9,9 +9,19 @@ fn is_subpattern(pattern: u8, sub: u8) -> bool {
    (pattern & sub) == sub
 }
 
-fn main() { 
-   println!("{}", std::io::stdin().lines().map(|line| {
-      let parsed = line.unwrap().split(" | ").map(|x| x.split(" ").map(|y| (bits(&y), y.chars().count()) ).collect() ).collect::<Vec<Vec<_>>>();
+fn main() {
+   let mut sum = 0;
+   for line in std::io::stdin().lines() {
+      let parsed = line.unwrap()
+         .split(" | ")
+         .map(|x| 
+            x.split(" ")
+               .map(|y| 
+                  (bits(&y), y.chars().count()) 
+               )
+               .collect() 
+         )
+         .collect::<Vec<Vec<_>>>();
       
       let mut decided = vec![0; 10];
       let mut undecided = vec![];
@@ -19,13 +29,17 @@ fn main() {
       // decide unique length numbers: 1, 4, 7, and 8
       for i in 0..10 {
          let len = parsed[0][i].1;
-         if len == 2 { // number 1
+         if len == 2 { 
+            // number 1
             decided[1] = parsed[0][i].0;
-         } else if len == 4 { // number 4
+         } else if len == 4 { 
+            // number 4
             decided[4] = parsed[0][i].0;
-         } else if len == 3 { // number 7
+         } else if len == 3 { 
+            // number 7
             decided[7] = parsed[0][i].0;
-         } else if len == 7 { // number 8
+         } else if len == 7 { 
+            // number 8
             decided[8] = parsed[0][i].0;
          } else {
             undecided.push(parsed[0][i]);
@@ -34,25 +48,31 @@ fn main() {
 
       // decide the rest: 9, 0, 3, 6, 5, and 2
       for (number, length) in undecided {
-         if is_subpattern(number, decided[1]) && is_subpattern(number, decided[7]) {
+         if is_subpattern(number, decided[1]) && 
+            is_subpattern(number, decided[7]) {
             if is_subpattern(number, decided[4]) {
+               // number 9
                decided[9] = number;
-            } else if length == 6 { 
+            } else if length == 6 {
+               // number 0
                decided[0] = number;
             } else {
+               // number 3
                decided[3] = number;
             }
          } else if length == 6 {
+            // number 6
             decided[6] = number;
          } else if (number & decided[4]).count_ones() == 3 {
+            // number 5
             decided[5] = number;
          } else {
+            // number 2
             decided[2] = number;
          }
       }
 
       let mut s = String::new();
-
       'outer: for i in 0..4 {
          for j in 0..10 {
             if parsed[1][i].0 == decided[j] {
@@ -61,6 +81,8 @@ fn main() {
             }
          }
       }
-      s.parse::<usize>().unwrap()
-   }).sum::<usize>());
+      sum += s.parse::<usize>().unwrap();
+   }
+   
+   println!("{}", sum);
 }
