@@ -1,3 +1,5 @@
+#![feature(stdin_forwarders)]
+
 // sets up to 7 bits, depending on which chars a-g are present in the str
 fn bits(a: &str) -> u8 {
     a.chars().fold(0, |output, c| output | (1 << (c as u8 - 97)))
@@ -8,8 +10,8 @@ fn is_subpattern(pattern: u8, sub: u8) -> bool {
 }
 
 fn main() { 
-   println!("{}", io::stdin().lock().lines().map(|line| {
-      let parsed = line.unwrap().split(" | ").map(|x| x.split(" ").map(|y| (bits(&y), y.len()) ).collect() ).collect::<Vec<Vec<_>>>();
+   println!("{}", std::io::stdin().lines().map(|line| {
+      let parsed = line.unwrap().split(" | ").map(|x| x.split(" ").map(|y| (bits(&y), y.chars().count()) ).collect() ).collect::<Vec<Vec<_>>>();
       
       let mut decided = vec![0; 10];
       let mut undecided = vec![];
