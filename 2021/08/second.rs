@@ -17,6 +17,8 @@ fn main() {
          .map(|x| 
             x.split(" ")
                .map(|y| 
+                  // we save the 10 numbers and the 4 output values as tuples:
+                  // (bitpattern, length)
                   (bits(&y), y.chars().count()) 
                )
                .collect() 
