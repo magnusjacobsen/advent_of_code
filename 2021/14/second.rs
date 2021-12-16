@@ -38,6 +38,9 @@ fn find_index(c: char, current: usize, to_index: &mut HashMap<char, usize>, reve
     (index, next)
 }
 
+/*
+    Today's strategy: dynamic programmin
+*/
 fn main() {
     let input = std::io::stdin().lines().map(|x| x.unwrap().to_string()).collect::<Vec<_>>();
     let mut map = HashMap::new();

@@ -1,0 +1,1 @@
+#![feature(stdin_forwarders)]
