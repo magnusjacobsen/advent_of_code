@@ -34,9 +34,8 @@ fn main() {
         }
     }
 
-    let flat = matrix.iter().flatten().collect::<Vec<_>>();
-
-    let mut counts = (2..next_cluster_id).map(|x| flat.iter().filter(|y| ***y == x).count()).collect::<Vec<_>>();
+    let mut counts = (2..next_cluster_id).map(|x| matrix.iter().flatten().filter(|y| ***y == x).count()).collect::<Vec<_>>();
     counts.sort_by(|a, b| b.cmp(a));
+    
     println!("{}", counts[0] * counts[1] * counts[2]);
 }

@@ -1,0 +1,4 @@
+#![feature(stdin_forwarders)]
+fn main() {
+    println!("{}", std::io::stdin().lines().map(|x| x.unwrap().chars().fold((String::new(), String::new()), |(mut open, mut faulty), c| if c == '(' || c == '[' || c == '{' || c == '<' { open.push(c); (open, faulty) } else if c as i32 - open.chars().last().unwrap() as i32 == 1 || c as i32 - open.chars().last().unwrap() as i32 == 2 { open.pop(); (open, faulty) } else {faulty.push(c); (open, faulty)} )).map(|(_, faulty)| if faulty.len() == 0 { 0 } else if faulty.chars().next().unwrap() == ')' { 3 } else if faulty.chars().next().unwrap() == ']' { 57 } else if faulty.chars().next().unwrap() == '}' { 1197 } else { 25137 }).sum::<i64>());
+}
