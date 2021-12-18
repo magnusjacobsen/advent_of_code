@@ -61,6 +61,37 @@ impl Packet {
             self.version
         }
     }
+
+    fn calculate(&self) -> u64 {
+        if let Some(children) = &self.children {
+            match self.type_id {
+                0 => { // sum
+                    children.iter().fold(0_u64, |acc ,x| acc + x.calculate())
+                },
+                1 => { // product
+                    children.iter().fold(1_u64, |acc, x| acc * x.calculate())
+                },
+                2 => { // minimum
+                    children.iter().map(|x| x.calculate()).min().unwrap()
+                },
+                3 => { // maximum
+                    children.iter().map(|x| x.calculate()).max().unwrap()
+                },
+                5 => { //greater than, always 2 subs
+                    if children[0].calculate() > children[1].calculate() { 1 } else { 0 }
+                },
+                6 => { // less than
+                    if children[0].calculate() < children[1].calculate() { 1 } else { 0 }
+                },
+                7 => { // equal
+                    if children[0].calculate() == children[1].calculate() { 1 } else { 0 }
+                },
+                _ => 0,
+            }
+        } else {
+            self.value.unwrap()
+        } 
+    }
 }
 
 fn parse_packet(i: usize, vec: &Vec<u8>) -> (Packet, usize) {
@@ -120,5 +151,5 @@ fn main() {
         acc
     });
     let (p,_) = parse_packet(0, &input);
-    println!("{}", p.version_sum());
+    println!("{}", p.calculate());
 }
