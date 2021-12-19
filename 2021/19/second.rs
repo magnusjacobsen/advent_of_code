@@ -1,5 +1,5 @@
 #![feature(stdin_forwarders)]
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 fn subtract(a: (i32, i32, i32), b: (i32, i32, i32)) -> (i32, i32, i32) {
     (a.0 - b.0, a.1 - b.1, a.2 - b.2)
@@ -9,7 +9,7 @@ fn add(a: (i32, i32, i32), b: (i32, i32, i32)) -> (i32, i32, i32) {
     (a.0 + b.0, a.1 + b.1, a.2 + b.2)
 }
 
-fn rotations(coord: (i32,i32,i32)) -> Vec<(i32,i32,i32)> {
+fn all_rotations(coord: (i32,i32,i32)) -> Vec<(i32,i32,i32)> {
     (0..48).map(|i| rotate(i, coord)).collect()
 }
 
@@ -26,21 +26,6 @@ fn rotate(i: usize, vec: (i32,i32,i32)) -> (i32,i32,i32) {
     let ymult = if (i % 24) < 12 { 1 } else { -1 };
     let zmult = if i < 24 { 1 } else { -1 };
     (x * xmult, y * ymult, z * zmult)
-}
-
-fn rec(current: usize, visited: &mut Vec<bool>, distances: &mut Vec<(i32, i32, i32)>, edges: &Vec<Vec<(usize, (i32, i32, i32), usize)>>, current_rots: &Vec<usize>, current_dists: &Vec<(i32, i32, i32)>, scanners: &Vec<Vec<(i32, i32, i32)>>) {
-    if !visited[current] {
-        visited[current] = true;
-        let pos = (0..current_dists.len()).fold((0,0,0), |c, j| add(rotate(current_rots[j], c), current_dists[j]));
-        distances[current] = pos;
-        for edge in &edges[current] {
-            let mut new_rots = vec![edge.2];
-            let mut new_dists = vec![edge.1];
-            new_rots.extend(current_rots);
-            new_dists.extend(current_dists);
-            rec(edge.0, visited, distances, edges, &new_rots, &new_dists, scanners);
-        }
-    }
 }
 
 fn manhattan(a: (i32, i32, i32), b: (i32, i32, i32)) -> i32 {
@@ -63,49 +48,55 @@ fn main() {
         index += 1;
     }
 
-    let mut edges = vec![vec![]; scanners.len()];
-
-    for i in 0..scanners.len() {
-        for j in 0..scanners.len() {
-            if j == i {
-                continue;
-            }
-            let mut map = HashMap::new();
-            for ii in 0..scanners[i].len() {
-                for jj in 0..scanners[j].len() {
-                    let b_rotations = rotations(scanners[j][jj]);
-                    for jjj in 0..b_rotations.len() {
-                        *map.entry((subtract(scanners[i][ii], b_rotations[jjj]), jjj)).or_insert(0) += 1;
-                    }
-                }
-            }
-            let mut vec = map.iter().collect::<Vec<_>>();
-            vec.sort_by(|a, b| b.1.partial_cmp(a.1).unwrap());
-            let cand = vec.iter().filter(|x| *x.1 > 11).collect::<Vec<_>>();
-            if cand.len() > 0 {
-                let ((rel_dist, rot), _) = cand[0];
-                let edge = (j, rel_dist.clone(), *rot);
-                edges[i].push(edge);
-            }
-        }
-    }
-
+    let mut distances = vec![(0, 0, 0); scanners.len()];
+    let mut from = (0..scanners.len()).collect::<Vec<_>>();
+    let mut rotations = vec![0; scanners.len()];
+    let mut queue = vec![0];
     let mut visited = vec![false; scanners.len()];
     let mut scanner_distances = vec![(0,0,0); scanners.len()];
 
-    rec(0, &mut visited, &mut scanner_distances, &edges, &vec![0], &vec![(0,0,0)], &scanners);
-
-    let mut largest = 0;
-    for i in 0..scanners.len() {
-        for j in 0..scanners.len() {
-            if j == i {
+    while let Some(current) = queue.pop() {
+        if visited[current] {
+            continue;
+        }
+        visited[current] = true;
+        for other in 0..scanners.len() {
+            if other == current || visited[other] || from[other] != other {
                 continue;
             }
-            let manhattan = manhattan(scanner_distances[i], scanner_distances[j]);
-            if largest < manhattan {
-                largest = manhattan;
+            let mut map = HashMap::new();
+            'outer: for i in 0..scanners[current].len() {
+                for j in 0..scanners[other].len() {
+                    let other_rotations = all_rotations(scanners[other][j]);
+                    for rotj in 0..other_rotations.len() {
+                        let val = map.entry((subtract(scanners[current][i], other_rotations[rotj]), rotj)).or_insert(0);
+                        *val += 1;
+                        if *val > 11 {
+                            break 'outer;
+                        }
+                    }
+                }
+            }
+            if let Some(((rel_dist, rot), _)) = map.iter().filter(|x| *x.1 > 11).next() {
+                from[other] = current;
+                distances[other] = rel_dist.clone();
+                rotations[other] = *rot;
+                queue.push(other);
+
+                let mut other_from = other;
+                let mut distance = (0,0,0);
+                while other_from != 0 {
+                    distance = add(rotate(rotations[other_from], distance), distances[other_from]);
+                    other_from = from[other_from];
+                }
+                scanner_distances[other] = distance;
             }
         }
     }
+
+    let largest = (0..scanners.len()).map(|i| (0..scanners.len()).fold(0, |acc, j| {
+        let v = manhattan(scanner_distances[i], scanner_distances[j]);
+        if v < acc || i == j { acc } else { v }
+    })).max().unwrap();
     println!("{:?}", largest);
 }
