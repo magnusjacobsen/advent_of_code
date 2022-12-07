@@ -1,45 +1,5 @@
 use std::io::BufRead;
 
-/* struct File {
-    size: u32,
-    name: String,
-}
-
-struct Folder {
-    name: String,
-    files: Vec<File>,
-    folders: Vec<Folder>
-}
-
-impl File {
-    fn new(name: String, size: u32) -> Self {
-        Self {name, size}
-    }
-}
-
-impl Folder {
-    fn new(name: String) -> Self {
-        Self {name, files: vec![], folders: vec![]}
-    }
-
-    fn add_file(&mut self, name: String, size: u32) {
-        self.files.push(File::new(name, size));
-    }
-
-    fn add_folder(&mut self, name: String) {
-        self.folders.push(Folder::new(name));
-    }
-} */
-
-fn find(name: String, vec: &Vec<String>) -> i32 {
-    for i in 0..vec.len() {
-        if name == vec[i] {
-            return i as i32;
-        }
-    }
-    return -1;
-}
-
 fn main() {
     let lines = std::io::stdin().lock().lines().map(|line| line.unwrap().clone().split(" ").map(|x| x.to_string()).collect::<Vec<_>>()).collect::<Vec<_>>();
     
@@ -101,4 +61,13 @@ fn rec_size(idx: usize, folder_names: &Vec<String>, contains: &Vec<Vec<String>>,
         acc += rec_size(dir_idx, folder_names, contains, file_sizes);
     }
     return acc;
+}
+
+fn find(name: String, vec: &Vec<String>) -> i32 {
+    for i in 0..vec.len() {
+        if name == vec[i] {
+            return i as i32;
+        }
+    }
+    return -1;
 }
