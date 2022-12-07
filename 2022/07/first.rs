@@ -24,12 +24,14 @@ fn main() {
                     } else {
                         //println!("we are here again!");
                     }
+                    //  setting the old current_idx in the parent path
                     parents.push(current_idx);
                     current_idx = name_idx as usize;
                 }
             },
             ("$", "ls") => {
                 file_sizes[current_idx] = 0;
+                contains[current_idx] = vec![];
             },
             ("dir", dirname) => contains[current_idx].push(dirname.to_string()),
             (size, _filename) => {
