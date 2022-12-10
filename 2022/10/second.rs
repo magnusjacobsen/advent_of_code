@@ -33,9 +33,9 @@ fn main() {
             cycle_count += 1;
             instruction_cycles -= 1;
             if cycle_count - 2 == register_x || cycle_count - 1 == register_x || cycle_count == register_x {
-                print!("#");
+                print!("▓");
             } else {
-                print!(" ");
+                print!("░");
             }
             if cycle_count % 40 == 0 {
                 cycle_count = 0;
