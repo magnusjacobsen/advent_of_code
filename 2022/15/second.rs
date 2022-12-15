@@ -25,12 +25,10 @@ fn main() {
     let mut candidates = HashSet::new();
     let max_width = 4000000;
 
-    let mut count = 1;
     for ((sensor_x, sensor_y), (beacon_x, beacon_y)) in sensors.clone() {
         let man_dist = manhattan((sensor_x, sensor_y), (beacon_x, beacon_y)) + 1;
         beacons.insert((beacon_x, beacon_y));
 
-        count += 1;
         for i in -man_dist..=man_dist {
             let y = sensor_y + i;
             if y < 0 || y > max_width {
