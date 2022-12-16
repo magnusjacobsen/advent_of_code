@@ -22,12 +22,10 @@ fn main() {
 
     for ((sensor_x, sensor_y), man_dist) in sensors.clone() {
         let outer = man_dist + 1;
-        if sensor_y - outer > max_width || sensor_y + max_width < 0 {
-            continue;
-        }
+
         let start = if sensor_y - outer < 0 { -sensor_y } else { -outer };
         let finish = if sensor_y + outer > max_width { max_width - sensor_y } else { outer };
-
+        
         for i in start..=finish {
             let y = sensor_y + i;
             let x1 = sensor_x + (i + if i < 0 { outer } else { -outer });
