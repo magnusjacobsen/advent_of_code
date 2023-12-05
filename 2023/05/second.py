@@ -34,16 +34,14 @@ def get_maps(lines):
     maps[current] = current_mappings
     return maps
             
-def get_seeds(lines):
-    seed_ranges = [int(num) for num in lines[0].split(': ')[1].split(' ')]
-    seed_ranges_iter = iter(seed_ranges)
-    seeds = set()
+def get_seed_ranges(lines):
+    seed_ranges_raw = [int(num) for num in lines[0].split(': ')[1].split(' ')]
+    seed_ranges_iter = iter(seed_ranges_raw)
+    seed_ranges = []
     for start in seed_ranges_iter:
-        print(len(seeds))
         amount = next(seed_ranges_iter)
-        for i in range(amount):
-            seeds.add(start + i)
-    return seeds
+        seed_ranges.append((start, amount))
+    return seed_ranges
 
 def get_mapping(seed, mappings):
     for (d_start, s_start, s_end) in mappings:
@@ -54,14 +52,15 @@ def get_mapping(seed, mappings):
 if __name__ == '__main__':
     inp = sys.stdin
     lines = [line.strip() for line in inp.readlines()]
-    seeds = get_seeds(lines)
+    seed_ranges = get_seed_ranges(lines)
     maps = get_maps(lines)
-    print(len(seeds))
-    for map_name in MAP_NAMES:
-        new_seeds = []
-        mappings = maps[map_name]
-        for seed in seeds:
-            new_seed = get_mapping(seed, mappings)
-            new_seeds.append(new_seed)
-        seeds = new_seeds
-    print(min(seeds))
+
+    min_val = sys.maxsize
+    for (start, amount) in seed_ranges:
+        for i in range(amount):
+            seed = start + i
+            for map_name in MAP_NAMES:
+                mappings = maps[map_name]
+                seed = get_mapping(seed, mappings)
+            min_val = min(min_val, seed)
+    print(min_val)
