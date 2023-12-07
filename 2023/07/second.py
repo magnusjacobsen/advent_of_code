@@ -1,6 +1,6 @@
 import sys
 
-NUMS = ['Z', 'Y', 'X', 'V', 'U', '9', '8', '7', '6', '5', '4', '3', '2']
+NUMS = ['Z', 'Y', 'X', 'U', '9', '8', '7', '6', '5', '4', '3', '2', '1']
 
 FIVES = [''.join([f'{i}']*5) for i in NUMS]
 FOURS = [''.join([f'{i}']*4) for i in NUMS]
@@ -12,12 +12,15 @@ def get_card_val(c : str) -> str:
         case 'A': return 'Z'
         case 'K': return 'Y'
         case 'Q': return 'X'
-        case 'J': return 'V'
+        case 'J': return '1'
         case 'T': return 'U'
         case x if x.isdigit(): return x
 
 def get_rank(cards, originals):
     original_order_vals = [get_card_val(c) for c in originals]
+    cards = [c for c in cards]
+    cards.sort(reverse=True)
+    cards = ''.join([c for c in cards])
     for five in FIVES:
         if five in cards:
             return (6, original_order_vals)
@@ -45,10 +48,16 @@ if __name__ == '__main__':
         splitted = line.split(' ')
         cards = [get_card_val(card) for card in splitted[0]]
         cards.sort(reverse=True)
-        card_str = '-'.join([f'{c}' for c in cards])
+        card_str = ''.join([f'{c}' for c in cards])
+        ranks = []
+        original = splitted[0]
+        for replacement in NUMS:
+            new_card_str = card_str.replace('1', replacement)
+            rank = get_rank(new_card_str, original)
+            ranks.append(rank)
+        ranks.sort(reverse=True)
         bid = int(splitted[1])
-        rank = get_rank(card_str, splitted[0])
-        hands.append((card_str, bid, rank, splitted[0]))
+        hands.append((card_str, bid, ranks[0], original))
 
     hands.sort(key=lambda x: x[2])
 
