@@ -7,4 +7,7 @@
 # Unignore all dirs
 !*/
 
+# ignore all txt files
+*.txt
+
 ### Above combination will ignore all files without extension ###
