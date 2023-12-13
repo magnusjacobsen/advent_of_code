@@ -1,6 +1,5 @@
 use std::io::BufRead;
 
-
 fn is_valid(chars: Vec<char>, numbers: &Vec<usize>) -> bool {
     &chars.iter().collect::<String>().split('.').filter(|x| x != &"").map(|x| x.chars().count()).collect::<Vec<_>>() == numbers
 }
