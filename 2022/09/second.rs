@@ -15,7 +15,7 @@ fn touches(a: (i32, i32), b: (i32, i32)) -> bool {
         (_, _)      => false,
     }
 }
-// 4968 too high
+
 fn main() {
     let lines = std::io::stdin().lock().lines().map(|line| {
         let line2 = line.unwrap();

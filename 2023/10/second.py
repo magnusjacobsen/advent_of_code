@@ -163,10 +163,6 @@ if __name__ == '__main__':
                 for look_i, look_j in get_lookat(i, j, dir, grid):
                     if is_inside(look_i, look_j, len_y, len_x) and loop_grid[look_i][look_j] == FREE:
                          mark_depth_first(look_i, look_j, len_y, len_x, loop_grid, INSIDE)
-                        #mark = get_mark(grid[i][j])
-                        #print(mark)
-                        #loop_grid[look_i][look_j] = mark
-                    #mark_depth_first(i - look_i, j - look_j, len_y, len_x, loop_grid, INSIDE)
                 if i == -1 or j == -1 or i == len_y or j == len_x:
                     break
                 elif grid[i][j] == 'S':
@@ -184,12 +180,3 @@ if __name__ == '__main__':
                     if map[i][j] == INSIDE:
                         count_inside += 1
             print(f'inside: {count_inside}')
-    #print((max(all_steps) + 1) // 2)
-
-    # 569 is too high
-    # 560 is too high
-    # 503 is too high
-    # 272 not correct
-    # 281 not correct
-
-    #┐└┘┌─│

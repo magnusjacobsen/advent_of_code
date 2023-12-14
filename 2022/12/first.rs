@@ -23,8 +23,6 @@ fn main() {
     let mut queue = VecDeque::from([start]);
     let mut final_steps = 0;
 
-    // 422 too high
-
     while let Some((i, j, steps)) = queue.pop_front() {
 
         if !visited[i][j] {
