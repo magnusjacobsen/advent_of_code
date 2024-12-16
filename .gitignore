@@ -10,4 +10,8 @@
 # ignore all txt files
 *.txt
 
+# ignore pdb and exe
+*.exe
+*.pdb
+
 ### Above combination will ignore all files without extension ###
